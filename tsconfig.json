@@ -38,7 +38,8 @@
 
     "incremental": true, // Включить инкрементную компиляцию путем чтения/записи информации из предыдущих компиляций в файл на диске
 
-    "noFallthroughCasesInSwitch": true // Сообщать об ошибках для случаев падения в инструкции switch
+    "noFallthroughCasesInSwitch": true, // Сообщать об ошибках для случаев падения в инструкции switch
+    "useDefineForClassFields": true
   },
 
   "include": [
