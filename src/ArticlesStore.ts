@@ -29,9 +29,10 @@ class ArticlesStore {
     makeAutoObservable(this);
     this.fetchArticles(); //загружаем новости при создании стора
   }
-
+  loading = false;
   fetchArticles = async () => {
     try {
+      this.loading = true; 
       const storyAllId = await getStoriesId();
       const articlesList = await Promise.all(
         storyAllId.map((storyId) => this.fetchStory(storyId)), //загружаем инфу по каждой новости
@@ -39,6 +40,9 @@ class ArticlesStore {
       this.articlesList = articlesList.filter((story) => !!story) as ArticlesList[]; // Устанавливаем список новостей, фильтруя пустые значения
     } catch (error) {
       console.error("Error fetching news:", error);
+    }
+    finally {
+      this.loading = false; // Устанавливаем флаг в false после окончания загрузки, независимо от результата
     }
   }; //aсинхронно подгружаем список новостей
 
