@@ -9,11 +9,11 @@ interface StarRatingProps {
 const StarRating: React.FC<StarRatingProps> = ({ rating, maxRating }) => {
   const getStarIcon = (starNumber: number): JSX.Element => {
     if (rating >= starNumber) {
-      return <FaStar color="ffD700" />;
+      return <FaStar color="#ffda08" />;
     } else if (rating + 0.5 === starNumber) {
-      return <FaStarHalfAlt color="ffD700" />;
+      return <FaStarHalfAlt color="#ffda08" />;
     } else {
-      return <FaRegStar color="#FFD700" />;
+      return <FaRegStar color="#ffda08" />;
     }
   };
 

@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import { getStoriesId, getStory, getComments } from "./Api/Api";
+import { getStoriesId, getStory} from "./Api/Api";
 
 // Интерфейс для объектов новостей
 export interface ArticlesList {
@@ -9,6 +9,7 @@ export interface ArticlesList {
   url?: string;
   by?: string;
   time?: number;
+  text?: string;
   descendants?: number;
   kids?: number[];
 }
@@ -16,14 +17,15 @@ export interface ArticlesList {
 // Интерфейс для объектов комментариев
 export interface Comment {
   id: number;
-  newsId: number;
-  text: string;
-  author: string;
-  date: Date;
+  by?: string;
+  text?: string;
+  time?: number;
+  kids?: number[];
 }
 class ArticlesStore {
   articlesList: ArticlesList[] = [];
-  commentsMap: Map<number, Comment[]> = new Map<number, Comment[]>(); // хранилище комментариев по каждой новости
+  comments: Record<number, Comment> = {}; 
+
 
   constructor() {
     makeAutoObservable(this);
@@ -32,7 +34,7 @@ class ArticlesStore {
 
 
   loading = true;
-  
+ 
   fetchArticles = async () => {
     try {
       this.loading = true; 
@@ -51,8 +53,20 @@ class ArticlesStore {
 
   fetchStory = async (storyId: number): Promise<ArticlesList | undefined> => {
     try {
-      const storyItem = await getStory(storyId); //получаем инфу по статье
+      const storyItem = await getStory(storyId); // Получаем информацию о статье
       if (storyItem && storyItem.time) {
+        const comments = await Promise.all(
+          (storyItem.kids ?? []).map((commentId) => this.fetchStory(commentId))
+        );
+
+        // Сохраняем полученные комментарии в объекте comments
+        comments.forEach((comment, index) => {
+          if (comment) {
+            const kidId = storyItem.kids?.[index] ?? 0;
+            this.comments[kidId] = comment;
+          }
+        });
+
         return {
           id: storyItem.id,
           title: storyItem.title,
@@ -61,22 +75,44 @@ class ArticlesStore {
           by: storyItem.by,
           time: storyItem.time,
           descendants: storyItem.descendants,
+          text: storyItem.text,
           kids: storyItem.kids,
         };
       }
     } catch (error) {
-      console.error(`Error fetching story ${storyId}:`, error);
+      console.error(`Ошибка при получении статьи ${storyId}:`, error);
     }
   };
 
-  fetchComments = async (storyId: number): Promise<void> => {
+  // Метод для обновления комментариев статьи по её id
+  fetchArticleComments = async (articleId: number) => {
     try {
-      const comments = await getComments(storyId); //получаем комментарии для указанной статьи
-      this.commentsMap.set(storyId, comments); //добавляем комментарии в map по ключу(Id)
+      const article = this.articlesList.find((item) => item.id === articleId);
+      if (!article) return;
+
+      const updatedArticle = await this.fetchStory(articleId);
+      if (updatedArticle) {
+        article.kids = updatedArticle.kids;
+      }
     } catch (error) {
-      console.error(`Error fetching comments for newsId ${storyId}:`, error);
+      console.error(`Ошибка при обновлении комментариев для статьи ${articleId}:`, error);
     }
   };
+
+  // Метод для принудительного обновления всех комментариев
+  refreshComments = async () => {
+    try {
+      const commentIds = Object.keys(this.comments).map(Number);
+      await Promise.all(
+        commentIds.map((commentId) => this.fetchArticleComments(commentId))
+      );
+    } catch (error) {
+      console.error("Error refreshing comments:", error);
+    }
+  };
+
+
+  
 
   // Метод для принудительного обновления списка новостей
   refreshArticles = () => {
@@ -84,10 +120,6 @@ class ArticlesStore {
     this.fetchArticles();
   };
 
-  // Метод для принудительного обновления комментариев для указанной новости
-  refreshComments = (newsId: number) => {
-    this.fetchComments(newsId);
-  };
 }
 
 export default new ArticlesStore();
