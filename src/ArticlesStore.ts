@@ -29,7 +29,10 @@ class ArticlesStore {
     makeAutoObservable(this);
     this.fetchArticles(); //загружаем новости при создании стора
   }
-  loading = false;
+
+
+  loading = true;
+  
   fetchArticles = async () => {
     try {
       this.loading = true; 
@@ -77,6 +80,7 @@ class ArticlesStore {
 
   // Метод для принудительного обновления списка новостей
   refreshArticles = () => {
+    this.loading = true; 
     this.fetchArticles();
   };
 
