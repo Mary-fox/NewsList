@@ -1,7 +1,8 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import ArticlesStore from "../../ArticlesStore";
+import { Link, useLocation } from "react-router-dom";
+import ArticlesStore from "../ArticlesStore";
 import styled from "styled-components";
+import { FaArrowLeft } from "react-icons/fa";
 
 const NavbarWrapper = styled.div`
   padding: 20px;
@@ -31,12 +32,24 @@ const Button = styled.button`
 `;
 
 const Navbar: React.FC = () => {
+  const location = useLocation();
+
+  // Проверяем, что текущий маршрут соответствует странице статьи
+  const isArticlePage = location.pathname.includes("/article/");
   const handleRefresh = () => {
     ArticlesStore.refreshArticles();
   };
   return (
     <NavbarWrapper>
-      <StyledLink to={"/"}>HACKER NEWS</StyledLink>
+      <div>
+        {isArticlePage && (
+          <Link to="/">
+            <FaArrowLeft />
+          </Link>
+        )}
+        <StyledLink to={"/"}>HACKER NEWS</StyledLink>
+      </div>
+
       <Button onClick={handleRefresh}> refresh </Button>
     </NavbarWrapper>
   );

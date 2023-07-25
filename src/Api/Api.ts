@@ -13,5 +13,4 @@ export const getStoriesId = async (): Promise<number[]> => {
 export const getStory = async (storyId: number): Promise<ArticlesList> => {
   const response = await axios.get<ArticlesList>(`${storyURL + storyId}.json`);
   return response.data;
-}; //получаем данные по конкретной новости по id
-
+}; 

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { ArticlesList } from "../ArticlesStore";
 import { observer } from "mobx-react";
 import ArticlesStore from "../ArticlesStore";
-import Navbar from "../components/Navbar/Navbar";
+import Navbar from "../components/Navbar";
 import ArticleCover from "../components/ArticleCover";
 
 const ArticlesPage: React.FC = observer(() => {
