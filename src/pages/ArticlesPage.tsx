@@ -4,6 +4,7 @@ import { observer } from "mobx-react";
 import ArticlesStore from "../ArticlesStore";
 import Navbar from "../components/Navbar";
 import ArticleCover from "../components/ArticleCover";
+import Loader from "../components/Loader";
 
 const ArticlesPage: React.FC = observer(() => {
   useEffect(() => {
@@ -22,7 +23,7 @@ const ArticlesPage: React.FC = observer(() => {
     <div>
       <Navbar />
       {ArticlesStore.loading ? (
-        <div>Загрузка статей...</div>
+        <Loader />
       ) : (
         ArticlesStore.articlesList.map((story: ArticlesList) => (
           <ArticleCover key={story.id} story={story} />

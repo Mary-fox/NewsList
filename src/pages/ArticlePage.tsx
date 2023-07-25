@@ -5,6 +5,8 @@ import styled from "styled-components";
 import ArticlesStore from "../ArticlesStore";
 import Navbar from "../components/Navbar";
 import Comments from "../components/Comments";
+import Loader from "../components/Loader";
+import ErrorPage from "./ErrorPage";
 
 const ArticleWrapper = styled.div`
   color: white;
@@ -35,7 +37,7 @@ const ArticlePage: React.FC = observer(() => {
     (item) => item.id === Number(storyId),
   );
   if (!story) {
-    return <div> Статья не найдена. Можно добавить страницу об ошибке еще</div>;
+    return <ErrorPage />;
   }
 
   const handleRefreshComments = () => {
@@ -47,7 +49,7 @@ const ArticlePage: React.FC = observer(() => {
     <div>
       <Navbar />
       {ArticlesStore.loading ? (
-        <div>Загрузка статей...</div>
+        <Loader />
       ) : (
         <ArticleWrapper>
           <ArticleHeader>
