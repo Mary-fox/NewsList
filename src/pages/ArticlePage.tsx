@@ -41,7 +41,7 @@ const ArticlePage: React.FC = observer(() => {
   }
 
   const handleRefreshComments = () => {
-    ArticlesStore.refreshComments(); // Обновляем все комментарии
+    ArticlesStore.fetchArticleComments(story.id); // Обновляем все комментарии
     setRefreshFlag(!refreshFlag);
   };
 
@@ -66,11 +66,7 @@ const ArticlePage: React.FC = observer(() => {
           </ArticleLink>
           <p>Comments: {story.descendants}</p>
           <button onClick={handleRefreshComments}>Обновить комментарии</button>
-          <Comments
-            comments={story.kids ?? []}
-            handleLoadingComments={(id) => ArticlesStore.fetchStory(id)}
-            refreshFlag={refreshFlag}
-          />
+          <Comments comments={story.kids ?? []} refreshFlag={refreshFlag} />
         </ArticleWrapper>
       )}
     </div>

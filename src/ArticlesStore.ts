@@ -97,22 +97,7 @@ class ArticlesStore {
     } catch (error) {
       console.error(`Ошибка при обновлении комментариев для статьи ${articleId}:`, error);
     }
-  };
-
-  // Метод для принудительного обновления всех комментариев
-  refreshComments = async () => {
-    try {
-      const commentIds = Object.keys(this.comments).map(Number);
-      await Promise.all(
-        commentIds.map((commentId) => this.fetchArticleComments(commentId))
-      );
-    } catch (error) {
-      console.error("Error refreshing comments:", error);
-    }
-  };
-
-
-  
+  };  
 
   // Метод для принудительного обновления списка новостей
   refreshArticles = () => {

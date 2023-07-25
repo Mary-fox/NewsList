@@ -15,12 +15,11 @@ const CommentAuthor = styled.h2`
 
 interface CommentItemProps {
   commentId: number;
-  handleLoadingComments: (id: number) => void;
   refreshFlag: boolean;
 }
 
 const CommentItem: React.FC<CommentItemProps> = observer(
-  ({ commentId, handleLoadingComments, refreshFlag }) => {
+  ({ commentId, refreshFlag }) => {
     const [expanded, setExpanded] = useState(false);
 
     const toggleCommentExpansion = () => {
@@ -41,11 +40,7 @@ const CommentItem: React.FC<CommentItemProps> = observer(
         </div>
         {expanded && hasKids && (
           <ul>
-            <Comments
-              comments={comment.kids ?? []}
-              handleLoadingComments={handleLoadingComments}
-              refreshFlag={refreshFlag}
-            />
+            <Comments comments={comment.kids ?? []} refreshFlag={refreshFlag} />
           </ul>
         )}
       </CommentWrapper>

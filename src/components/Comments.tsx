@@ -1,19 +1,21 @@
 import React, { useEffect } from "react";
 import { observer } from "mobx-react";
 import CommentItem from "./CommentItem";
+import ArticlesStore from "../ArticlesStore";
 
-interface HackerNewsCommentsProps {
+interface CommentsProps {
   comments: number[];
-  handleLoadingComments: (id: number) => void;
   refreshFlag: boolean;
 }
 
-const Comments: React.FC<HackerNewsCommentsProps> = observer(
-  ({ comments, handleLoadingComments, refreshFlag }) => {
+const Comments: React.FC<CommentsProps> = observer(
+  ({ comments, refreshFlag }) => {
     useEffect(() => {
       const intervalId = setInterval(() => {
-        comments.forEach((commentId) => handleLoadingComments(commentId));
-        console.log("render");
+        comments.forEach(
+          (commentId) => ArticlesStore.fetchArticleComments(commentId),
+          console.log("render"),
+        );
       }, 60000);
       return () => {
         clearInterval(intervalId);
@@ -26,7 +28,6 @@ const Comments: React.FC<HackerNewsCommentsProps> = observer(
           <CommentItem
             key={commentId}
             commentId={commentId}
-            handleLoadingComments={handleLoadingComments}
             refreshFlag={refreshFlag}
           />
         ))}
