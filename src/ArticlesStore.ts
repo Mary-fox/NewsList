@@ -25,7 +25,9 @@ export interface Comment {
 class ArticlesStore {
   articlesList: ArticlesList[] = [];
   comments: Record<number, Comment> = {}; 
-
+  loading = true;
+  error: string | null = null; 
+ 
 
   constructor() {
     makeAutoObservable(this);
@@ -33,11 +35,11 @@ class ArticlesStore {
   }
 
 
-  loading = true;
  
   fetchArticles = async () => {
     try {
       this.loading = true; 
+      this.error = null;
       const storyAllId = await getStoriesId();
       const articlesList = await Promise.all(
         storyAllId.map((storyId) => this.fetchStory(storyId)), //загружаем инфу по каждой новости
@@ -55,17 +57,20 @@ class ArticlesStore {
     try {
       const storyItem = await getStory(storyId); // Получаем информацию о статье
       if (storyItem && storyItem.time) {
-        const comments = await Promise.all(
-          (storyItem.kids ?? []).map((commentId) => this.fetchStory(commentId))
-        );
+        // Обновляем комментарии только при просмотре статьи, а не при загрузке всех статей
+        if (this.articlesList.find((item) => item.id === storyId)) {
+          const comments = await Promise.all(
+            (storyItem.kids ?? []).map((commentId) => this.fetchStory(commentId))
+          );
 
-        // Сохраняем полученные комментарии в объекте comments
-        comments.forEach((comment, index) => {
-          if (comment) {
-            const kidId = storyItem.kids?.[index] ?? 0;
-            this.comments[kidId] = comment;
-          }
-        });
+          // Сохраняем полученные комментарии в объекте comments
+          comments.forEach((comment, index) => {
+            if (comment) {
+              const kidId = storyItem.kids?.[index] ?? 0;
+              this.comments[kidId] = comment;
+            }
+          });
+        }
 
         return {
           id: storyItem.id,

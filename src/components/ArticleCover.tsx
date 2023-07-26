@@ -16,6 +16,7 @@ const CoverHeader = styled.div`
 const StyledLink = styled(Link)`
   color: white;
   font-size: 15px;
+  text-decoration: none;
 `;
 
 const ArticleCover: React.FC<{ story: ArticlesList }> = ({ story }) => {

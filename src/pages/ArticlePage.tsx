@@ -18,9 +18,13 @@ const ArticleHeader = styled.div`
 `;
 const ArticleLink = styled.a`
   color: white;
-  font-size: 15px;
+  font-size: 20px;
+  background-color: rgba(57, 57, 57, 0.5);
+  border-radius: 10%;
+  padding: 5px;
   &:hover {
     color: #cdcd3cd1;
+    cursor: pointer;
   }
 `;
 
@@ -36,10 +40,15 @@ const ArticlePage: React.FC = observer(() => {
   const story = ArticlesStore.articlesList.find(
     (item) => item.id === Number(storyId),
   );
-  if (!story) {
+  if (ArticlesStore.loading) {
+    return <Loader />;
+  } else if (ArticlesStore.error) {
     return <ErrorPage />;
   }
 
+  if (!story) {
+    return <ErrorPage />;
+  }
   const handleRefreshComments = () => {
     ArticlesStore.fetchArticleComments(story.id); // Обновляем все комментарии
     setRefreshFlag(!refreshFlag);
@@ -48,27 +57,19 @@ const ArticlePage: React.FC = observer(() => {
   return (
     <div>
       <Navbar />
-      {ArticlesStore.loading ? (
-        <Loader />
-      ) : (
-        <ArticleWrapper>
-          <ArticleHeader>
-            <p>Author: {story.by}</p>
-            <p>{story.time ? new Date(story.time * 1000).toUTCString() : ""}</p>
-          </ArticleHeader>
-          <h1>{story.title}</h1>
-          <ArticleLink
-            href={story.url}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Open the article
-          </ArticleLink>
-          <p>Comments: {story.descendants}</p>
-          <button onClick={handleRefreshComments}>Обновить комментарии</button>
-          <Comments comments={story.kids ?? []} refreshFlag={refreshFlag} />
-        </ArticleWrapper>
-      )}
+      <ArticleWrapper>
+        <ArticleHeader>
+          <p>Author: {story.by}</p>
+          <p>{story.time ? new Date(story.time * 1000).toUTCString() : ""}</p>
+        </ArticleHeader>
+        <h1>{story.title}</h1>
+        <ArticleLink href={story.url} target="_blank" rel="noopener noreferrer">
+          Open the article
+        </ArticleLink>
+        <p>Comments: {story.descendants}</p>
+        <button onClick={handleRefreshComments}>Обновить комментарии</button>
+        <Comments comments={story.kids ?? []} refreshFlag={refreshFlag} />
+      </ArticleWrapper>
     </div>
   );
 });

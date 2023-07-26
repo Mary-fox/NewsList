@@ -8,9 +8,15 @@ const CommentWrapper = styled.div`
   border: 1px solid white;
   padding: 20px;
 `;
-
+const CommentHeader = styled.h2`
+  display: flex;
+  justify-content: space-between;
+`;
 const CommentAuthor = styled.h2`
   font-size: 20px;
+`;
+const CommentDate = styled.p`
+  font-size: 10px;
 `;
 
 interface CommentItemProps {
@@ -35,7 +41,12 @@ const CommentItem: React.FC<CommentItemProps> = observer(
       <CommentWrapper>
         <div onClick={toggleCommentExpansion}>
           {expanded ? "-" : "+"}
-          <CommentAuthor>{comment.by}</CommentAuthor>
+          <CommentHeader>
+            <CommentAuthor>{comment.by}</CommentAuthor>
+            <CommentDate>
+              {comment.time ? new Date(comment.time * 1000).toUTCString() : ""}
+            </CommentDate>
+          </CommentHeader>
           <div dangerouslySetInnerHTML={{ __html: comment.text }} />
         </div>
         {expanded && hasKids && (
