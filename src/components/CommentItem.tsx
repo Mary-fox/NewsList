@@ -8,7 +8,7 @@ const CommentWrapper = styled.div`
   border: 1px solid white;
   padding: 20px;
 `;
-const CommentHeader = styled.h2`
+const CommentHeader = styled.div`
   display: flex;
   justify-content: space-between;
 `;
