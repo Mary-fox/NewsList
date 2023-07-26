@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeObservable, action,  observable } from "mobx";
 import { getStoriesId, getStory} from "./Api/Api";
 
 // Интерфейс для объектов новостей
@@ -30,12 +30,17 @@ class ArticlesStore {
  
 
   constructor() {
-    makeAutoObservable(this);
+    makeObservable(this, {
+      loading: observable,
+      error: observable,
+      fetchArticles: action,
+      refreshArticles: action,
+    });
     this.fetchArticles(); //загружаем новости при создании стора
   }
 
 
- 
+  
   fetchArticles = async () => {
     try {
       this.loading = true; 
@@ -53,9 +58,11 @@ class ArticlesStore {
     }
   }; //aсинхронно подгружаем список новостей
 
-  fetchStory = async (storyId: number): Promise<ArticlesList | undefined> => {
+  fetchStory =  async (storyId: number): Promise<ArticlesList | undefined> => {
+    
     try {
       const storyItem = await getStory(storyId); // Получаем информацию о статье
+      
       if (storyItem && storyItem.time) {
         // Обновляем комментарии только при просмотре статьи, а не при загрузке всех статей
         if (this.articlesList.find((item) => item.id === storyId)) {
@@ -105,7 +112,7 @@ class ArticlesStore {
   };  
 
   // Метод для принудительного обновления списка новостей
-  refreshArticles = () => {
+  refreshArticles =  () => {
     this.loading = true; 
     this.fetchArticles();
   };

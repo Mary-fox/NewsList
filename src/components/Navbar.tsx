@@ -1,4 +1,6 @@
 import React from "react";
+import { action } from "mobx";
+import { observer } from "mobx-react";
 import { Link, useLocation } from "react-router-dom";
 import ArticlesStore from "../ArticlesStore";
 import styled from "styled-components";
@@ -31,14 +33,14 @@ const Button = styled.button`
   }
 `;
 
-const Navbar: React.FC = () => {
+const Navbar: React.FC = observer(() => {
   const location = useLocation();
 
   // Проверяем, что текущий маршрут соответствует странице статьи
   const isArticlePage = location.pathname.includes("/article/");
-  const handleRefresh = () => {
+  const handleRefresh = action(() => {
     ArticlesStore.refreshArticles();
-  };
+  });
   return (
     <NavbarWrapper>
       <div>
@@ -53,5 +55,5 @@ const Navbar: React.FC = () => {
       <Button onClick={handleRefresh}> refresh </Button>
     </NavbarWrapper>
   );
-};
+});
 export default Navbar;

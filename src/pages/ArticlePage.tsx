@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { action } from "mobx";
 import { observer } from "mobx-react";
 import styled from "styled-components";
 import ArticlesStore from "../ArticlesStore";
@@ -49,10 +50,10 @@ const ArticlePage: React.FC = observer(() => {
   if (!story) {
     return <ErrorPage />;
   }
-  const handleRefreshComments = () => {
+  const handleRefreshComments = action(() => {
     ArticlesStore.fetchArticleComments(story.id); // Обновляем все комментарии
     setRefreshFlag(!refreshFlag);
-  };
+  });
 
   return (
     <div>

@@ -1,4 +1,5 @@
 import React from "react";
+import { observer } from "mobx-react";
 import styled, { keyframes } from "styled-components";
 
 const loadAnimation = keyframes`
@@ -25,12 +26,12 @@ const LoaderCircle = styled.div`
   animation: ${loadAnimation} 1s linear infinite;
 `;
 
-const Loader = () => {
+const Loader = observer(() => {
   return (
     <LoaderWrapper>
       <LoaderCircle />
     </LoaderWrapper>
   );
-};
+});
 
 export default Loader;
