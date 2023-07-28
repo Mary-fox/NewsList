@@ -1,6 +1,6 @@
 import React from "react";
 import { observer } from "mobx-react";
-import { ArticlesList } from "../ArticlesStore";
+import { ArticlesList } from "../store/ArticlesStore";
 import { Link } from "react-router-dom";
 import StarRating from "./StarRating";
 import styled from "styled-components";

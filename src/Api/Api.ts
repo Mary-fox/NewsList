@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ArticlesList } from "../ArticlesStore";
+import { ArticlesList } from "../store/ArticlesStore";
 
 const baseURL = "https://hacker-news.firebaseio.com/v0/";
 const allStoriesURL = `${baseURL}newstories.json`; //url для всего списка новостей

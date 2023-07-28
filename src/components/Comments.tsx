@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { observer } from "mobx-react";
 import CommentItem from "./CommentItem";
-import ArticlesStore from "../ArticlesStore";
+import ArticlesStore from "../store/ArticlesStore";
 
 interface CommentsProps {
   comments: number[];

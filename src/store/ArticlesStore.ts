@@ -1,5 +1,5 @@
 import { makeObservable, action,  observable } from "mobx";
-import { getStoriesId, getStory} from "./Api/Api";
+import { getStoriesId, getStory} from "../Api/Api";
 
 // Интерфейс для объектов новостей
 export interface ArticlesList {
@@ -73,7 +73,7 @@ class ArticlesStore {
           // Сохраняем полученные комментарии в объекте comments
           comments.forEach((comment, index) => {
             if (comment) {
-              const kidId = storyItem.kids?.[index] ?? 0;
+              const kidId:number = storyItem.kids?.[index] ?? 0;
               this.comments[kidId] = comment;
             }
           });

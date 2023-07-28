@@ -2,7 +2,7 @@ import React from "react";
 import { action } from "mobx";
 import { observer } from "mobx-react";
 import { Link, useLocation } from "react-router-dom";
-import ArticlesStore from "../ArticlesStore";
+import ArticlesStore from "../store/ArticlesStore";
 import styled from "styled-components";
 import { FaArrowLeft } from "react-icons/fa";
 

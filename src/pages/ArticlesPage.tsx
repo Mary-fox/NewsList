@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
-import { ArticlesList } from "../ArticlesStore";
+import { ArticlesList } from "../store/ArticlesStore";
 import { observer } from "mobx-react";
-import ArticlesStore from "../ArticlesStore";
+import ArticlesStore from "../store/ArticlesStore";
 import Navbar from "../components/Navbar";
 import ArticleCover from "../components/ArticleCover";
 import Loader from "../components/Loader";
@@ -9,10 +9,8 @@ import Loader from "../components/Loader";
 const ArticlesPage: React.FC = observer(() => {
   useEffect(() => {
     ArticlesStore.refreshArticles();
-
     const intervalId = setInterval(() => {
       ArticlesStore.refreshArticles();
-      console.log("render");
     }, 60000);
     return () => {
       clearInterval(intervalId);

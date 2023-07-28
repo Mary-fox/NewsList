@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { observer } from "mobx-react";
 import styled from "styled-components";
-import ArticlesStore from "../ArticlesStore";
+import ArticlesStore from "../store/ArticlesStore";
 import Comments from "./Comments";
 
 const CommentWrapper = styled.div`
