@@ -38,8 +38,17 @@ const Navbar: React.FC = observer(() => {
 
   // Проверяем, что текущий маршрут соответствует странице статьи
   const isArticlePage = location.pathname.includes("/article/");
+
   const handleRefresh = action(() => {
-    ArticlesStore.refreshArticles();
+    if (isArticlePage) {
+      // Выполняем обновление только одной статьи
+      const storyId = location.pathname.split("/article/")[1];
+      const id = Number(storyId);
+      ArticlesStore.refreshArticle(id);
+    } else {
+      // Выполняем обновление всех статей
+      ArticlesStore.refreshArticles();
+    }
   });
   return (
     <NavbarWrapper>

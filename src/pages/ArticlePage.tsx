@@ -20,7 +20,8 @@ const ArticlePage: React.FC = observer(() => {
   );
   if (ArticlesStore.loading) {
     return <Loader />;
-  } else if (ArticlesStore.error) {
+  }
+  if (ArticlesStore.error) {
     return <ErrorPage />;
   }
 
@@ -31,7 +32,7 @@ const ArticlePage: React.FC = observer(() => {
   return (
     <div>
       <Navbar />
-      <ArticleItem story={story} />
+      {ArticlesStore.loading ? <Loader /> : <ArticleItem story={story} />}
     </div>
   );
 });

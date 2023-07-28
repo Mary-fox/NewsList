@@ -1,5 +1,5 @@
-import { makeObservable, action,  observable } from "mobx";
-import { getStoriesId, getStory} from "../Api/Api";
+import { makeObservable, action, observable } from "mobx";
+import { getStoriesId, getStory } from "../Api/Api";
 
 // Интерфейс для объектов новостей
 export interface ArticlesList {
@@ -24,10 +24,9 @@ export interface Comment {
 }
 class ArticlesStore {
   articlesList: ArticlesList[] = [];
-  comments: Record<number, Comment> = {}; 
+  comments: Record<number, Comment> = {};
   loading = true;
-  error: string | null = null; 
- 
+  error: string | null = null;
 
   constructor() {
     makeObservable(this, {
@@ -35,45 +34,46 @@ class ArticlesStore {
       error: observable,
       fetchArticles: action,
       refreshArticles: action,
+      refreshArticle: action
     });
     this.fetchArticles(); //загружаем новости при создании стора
   }
 
-
-  
   fetchArticles = async () => {
     try {
-      this.loading = true; 
+      this.loading = true;
       this.error = null;
       const storyAllId = await getStoriesId();
       const articlesList = await Promise.all(
         storyAllId.map((storyId) => this.fetchStory(storyId)), //загружаем инфу по каждой новости
       );
-      this.articlesList = articlesList.filter((story) => !!story) as ArticlesList[]; // Устанавливаем список новостей, фильтруя пустые значения
+      this.articlesList = articlesList.filter(
+        (story) => !!story,
+      ) as ArticlesList[]; // Устанавливаем список новостей, фильтруя пустые значения
     } catch (error) {
       console.error("Error fetching news:", error);
-    }
-    finally {
+    } finally {
       this.loading = false; // Устанавливаем флаг в false после окончания загрузки, независимо от результата
     }
   }; //aсинхронно подгружаем список новостей
 
-  fetchStory =  async (storyId: number): Promise<ArticlesList | undefined> => {
-    
+  fetchStory = async (storyId: number): Promise<ArticlesList | undefined> => {
     try {
       const storyItem = await getStory(storyId); // Получаем информацию о статье
-      
+
       if (storyItem && storyItem.time) {
         // Обновляем комментарии только при просмотре статьи, а не при загрузке всех статей
         if (this.articlesList.find((item) => item.id === storyId)) {
           const comments = await Promise.all(
-            (storyItem.kids ?? []).map((commentId) => this.fetchStory(commentId))
+            (storyItem.kids ?? []).map((commentId) =>
+              this.fetchStory(commentId),
+            ),
           );
 
           // Сохраняем полученные комментарии в объекте comments
           comments.forEach((comment, index) => {
             if (comment) {
-              const kidId:number = storyItem.kids?.[index] ?? 0;
+              const kidId: number = storyItem.kids?.[index] ?? 0;
               this.comments[kidId] = comment;
             }
           });
@@ -107,16 +107,34 @@ class ArticlesStore {
         article.kids = updatedArticle.kids;
       }
     } catch (error) {
-      console.error(`Ошибка при обновлении комментариев для статьи ${articleId}:`, error);
+      console.error(
+        `Ошибка при обновлении комментариев для статьи ${articleId}:`,
+        error,
+      );
     }
-  };  
+  };
+  // Метод для обновления отдельной статьи по её id
+  refreshArticle = async (articleId: number) => {
+    try {
+      this.loading = true;
+      const article = this.articlesList.find((item) => item.id === articleId);
+      if (!article) return;
 
-  // Метод для принудительного обновления списка новостей
-  refreshArticles =  () => {
-    this.loading = true; 
-    this.fetchArticles();
+      const updatedArticle = await this.fetchStory(articleId);
+      if (updatedArticle) {
+        // Обновляем только одну статью
+        Object.assign(article, updatedArticle);
+      }
+    } catch (error) {
+      console.error(`Ошибка при обновлении статьи ${articleId}:`, error);
+    }
   };
 
+  // Метод для принудительного обновления списка новостей
+  refreshArticles = () => {
+    this.loading = true;
+    this.fetchArticles();
+  };
 }
 
 export default new ArticlesStore();
