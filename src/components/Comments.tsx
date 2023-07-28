@@ -12,9 +12,8 @@ const Comments: React.FC<CommentsProps> = observer(
   ({ comments, refreshFlag }) => {
     useEffect(() => {
       const intervalId = setInterval(() => {
-        comments.forEach(
-          (commentId) => ArticlesStore.fetchArticleComments(commentId),
-          console.log("render"),
+        comments.forEach((commentId) =>
+          ArticlesStore.fetchArticleComments(commentId),
         );
       }, 60000);
       return () => {

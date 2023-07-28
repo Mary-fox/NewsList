@@ -18,14 +18,11 @@ const ArticlePage: React.FC = observer(() => {
   const story = ArticlesStore.articlesList.find(
     (item) => item.id === Number(storyId),
   );
+
   if (ArticlesStore.loading) {
     return <Loader />;
   }
-  if (ArticlesStore.error) {
-    return <ErrorPage />;
-  }
-
-  if (!story) {
+  if (ArticlesStore.error || !story) {
     return <ErrorPage />;
   }
 
