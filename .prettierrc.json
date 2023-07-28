@@ -1,0 +1,16 @@
+{
+    "semi": true, 
+    "tabWidth": 2,
+    "trailingComma": "all",
+    "arrowParens": "always",
+    "printWidth": 80,
+    "overrides": [
+      {
+        "files": "*.tsx",
+        "options": {
+          "parser": "typescript"
+        }
+      }
+    ]
+  }
+  
